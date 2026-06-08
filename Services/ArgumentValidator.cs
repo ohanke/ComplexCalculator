@@ -40,14 +40,19 @@ namespace ComplexCalculator.Services
         }
 
         /// <summary>
-        /// Checks if the divisor is not equal to zero.
+        /// Checks if the divisor is not null and is not equal to zero.
         /// </summary>
         /// <param name="divisor">The divisor to validate.</param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown when the divisor is null.
+        /// </exception>
         /// <exception cref="DivideByZeroException">
         /// Thrown when the divisor is equal to zero.
         /// </exception>
         public void ValidateDivisorIsNotZero(ComplexNumber divisor)
         {
+            ValidateComplexNumber(divisor);
+
             if (divisor.IsZero())
             {
                 throw new DivideByZeroException("Cannot divide by complex number 0 + 0i.");

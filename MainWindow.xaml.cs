@@ -30,7 +30,7 @@ namespace ComplexCalculator
         new DivideOperation(argumentValidator)
     };
 
-            _calculatorService = new ComplexCalculatorService(operations);
+            _calculatorService = new ComplexCalculatorService(operations, argumentValidator);
             _complexPlaneDrawingService = new ComplexPlaneDrawingService();
 
             _complexPlaneDrawingService.DrawPlane(ComplexPlaneCanvas);
