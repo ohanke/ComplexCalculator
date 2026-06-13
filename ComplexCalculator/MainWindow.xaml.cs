@@ -23,12 +23,12 @@ namespace ComplexCalculator
             ArgumentValidator argumentValidator = new ArgumentValidator();
 
             List<IComplexOperation> operations = new List<IComplexOperation>
-    {
-        new AddOperation(argumentValidator),
-        new SubtractOperation(argumentValidator),
-        new MultiplyOperation(argumentValidator),
-        new DivideOperation(argumentValidator)
-    };
+            {
+                new AddOperation(argumentValidator),
+                new SubtractOperation(argumentValidator),
+                new MultiplyOperation(argumentValidator),
+                new DivideOperation(argumentValidator)
+            };
 
             _calculatorService = new ComplexCalculatorService(operations, argumentValidator);
             _complexPlaneDrawingService = new ComplexPlaneDrawingService();
@@ -74,7 +74,8 @@ namespace ComplexCalculator
                     SecondNumberDescription
                 );
 
-                ComplexNumber result = _calculatorService.Calculate(
+                ComplexNumber result = _calculatorService.Calculate
+                    (
                     firstNumber,
                     secondNumber,
                     operation
@@ -101,14 +102,6 @@ namespace ComplexCalculator
             {
                 ShowError(exception.Message);
             }
-        }
-
-        private ComplexNumber CalculateResult(
-            ComplexNumber firstNumber,
-            ComplexNumber secondNumber,
-            string operation)
-        {
-            return _calculatorService.Calculate(firstNumber, secondNumber, operation);
         }
 
         private ComplexNumber ReadComplexNumber(

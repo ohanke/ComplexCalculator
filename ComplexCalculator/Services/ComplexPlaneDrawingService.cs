@@ -130,6 +130,7 @@ namespace ComplexCalculator.Services
         /// <param name="height">The canvas height.</param>
         private void DrawAxis(Canvas canvas, double centerX, double centerY, double width, double height)
         {
+            // horizontal Re axis
             Line realAxis = new Line
             {
                 X1 = 0,
@@ -140,6 +141,7 @@ namespace ComplexCalculator.Services
                 StrokeThickness = AxisStrokeThickness
             };
 
+            // vertical Im axis
             Line imaginaryAxis = new Line
             {
                 X1 = centerX,
