@@ -53,6 +53,61 @@ namespace ComplexCalculator.Models
         }
 
         /// <summary>
+        /// Calculates the magnitude of the complex number.
+        /// </summary>
+        /// <returns>
+        /// The magnitude of the complex number.
+        /// </returns>
+        public double Magnitude()
+        {
+            return Math.Sqrt(MagnitudeSquared());
+        }
+
+        /// <summary>
+        /// Calculates the argument of the complex number in radians.
+        /// </summary>
+        /// <returns>
+        /// The argument of the complex number in radians.
+        /// </returns>
+        public double ArgumentRadians()
+        {
+            return Math.Atan2(Imaginary, Real);
+        }
+
+        /// <summary>
+        /// Calculates the argument of the complex number in degrees.
+        /// </summary>
+        /// <returns>
+        /// The argument of the complex number in degrees.
+        /// </returns>
+        public double ArgumentDegrees()
+        {
+            return ArgumentRadians() * 180 / Math.PI;
+        }
+
+        /// <summary>
+        /// Calculates the conjugate of the complex number.
+        /// </summary>
+        /// <returns>
+        /// The conjugate of the complex number.
+        /// </returns>
+        public ComplexNumber Conjugate()
+        {
+            return new ComplexNumber(Real, -Imaginary);
+        }
+
+        /// <summary>
+        /// Converts the complex number to trigonometric form.
+        /// </summary>
+        /// <returns>
+        /// The trigonometric form of the complex number.
+        /// </returns>
+        public TrigonometricForm ToTrigonometricForm()
+        {
+            return new TrigonometricForm(Magnitude(), ArgumentRadians());
+        }
+
+        /// <summary>
         /// Returns the complex number as a formatted algebraic expression.
         /// </summary>
         /// <returns>
