@@ -59,6 +59,21 @@ namespace ComplexCalculator
             Calculate(Constants.DivideSign);
         }
 
+        private void MagnitudeButton_Click(object sender, RoutedEventArgs e)
+        {
+            CalculateMagnitude();
+        }
+
+        private void ConjugateButton_Click(object sender, RoutedEventArgs e)
+        {
+            CalculateConjugate();
+        }
+
+        private void TrigonometricFormButton_Click(object sender, RoutedEventArgs e)
+        {
+            ShowTrigonometricForm();
+        }
+
         private void Calculate(string operation)
         {
             try
@@ -146,6 +161,71 @@ namespace ComplexCalculator
             return value;
         }
 
+        private void CalculateMagnitude()
+        {
+            try
+            {
+                ComplexNumber number = ReadFirstComplexNumber();
+
+                double magnitude = number.Magnitude();
+
+                ResultTextBlock.Text = $"|z₁| = {magnitude:0.##}";
+
+                _complexPlaneDrawingService.DrawPlane(ComplexPlaneCanvas);
+                _complexPlaneDrawingService.DrawVector(ComplexPlaneCanvas, number);
+            }
+            catch (Exception exception)
+            {
+                ResultTextBlock.Text = exception.Message;
+            }
+        }
+
+        private void CalculateConjugate()
+        {
+            try
+            {
+                ComplexNumber number = ReadFirstComplexNumber();
+
+                ComplexNumber conjugate = number.Conjugate();
+
+                ResultTextBlock.Text = $"conj(z₁) = {conjugate}";
+
+                _complexPlaneDrawingService.DrawPlane(ComplexPlaneCanvas);
+                _complexPlaneDrawingService.DrawVector(ComplexPlaneCanvas, conjugate);
+            }
+            catch (Exception exception)
+            {
+                ResultTextBlock.Text = exception.Message;
+            }
+        }
+
+        private void ShowTrigonometricForm()
+        {
+            try
+            {
+                ComplexNumber number = ReadFirstComplexNumber();
+
+                TrigonometricForm trigonometricForm = number.ToTrigonometricForm();
+
+                ResultTextBlock.Text = $"z₁ = {trigonometricForm}";
+
+                _complexPlaneDrawingService.DrawPlane(ComplexPlaneCanvas);
+                _complexPlaneDrawingService.DrawVector(ComplexPlaneCanvas, number);
+            }
+            catch (Exception exception)
+            {
+                ResultTextBlock.Text = exception.Message;
+            }
+        }
+
+        private ComplexNumber ReadFirstComplexNumber()
+        {
+            return ReadComplexNumber(
+                FirstRealTextBox,
+                FirstImaginaryTextBox,
+                "first number"
+            );
+        }
         private void ShowError(string message)
         {
             ErrorTextBlock.Text = message;

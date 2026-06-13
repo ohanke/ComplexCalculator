@@ -1,131 +1,82 @@
-﻿<Window x:Class="ComplexCalculator.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Kalkulator liczb zespolonych"
-        Height="650"
-        Width="900"
-        WindowStartupLocation="CenterScreen">
-
+﻿<Window x:Class="ComplexCalculator.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="Kalkulator liczb zespolonych" Height="650" Width="900" WindowStartupLocation="CenterScreen">
     <Grid Margin="20">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="350"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-
         <!-- Panel wejściowy -->
         <StackPanel Grid.Column="0" Margin="0,0,20,0">
-
-            <TextBlock Text="Kalkulator liczb zespolonych"
-                       FontSize="22"
-                       FontWeight="Bold"
-                       Margin="0,0,0,20"/>
-
-            <TextBlock Text="Pierwsza liczba zespolona"
-                       FontSize="16"
-                       FontWeight="Bold"
-                       Margin="0,0,0,10"/>
-
+            <TextBlock Text="Kalkulator liczb zespolonych" FontSize="22" FontWeight="Bold" Margin="0,0,0,20"/>
+            <TextBlock Text="Pierwsza liczba zespolona" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
             <TextBlock Text="Część rzeczywista a:"/>
-            <TextBox x:Name="FirstRealTextBox"
-                     Height="30"
-                     Margin="0,5,0,10"/>
-
+            <TextBox x:Name="FirstRealTextBox" Height="30" Margin="0,5,0,10"/>
             <TextBlock Text="Część urojona b:"/>
-            <TextBox x:Name="FirstImaginaryTextBox"
-                     Height="30"
-                     Margin="0,5,0,20"/>
-
-            <TextBlock Text="Druga liczba zespolona"
-                       FontSize="16"
-                       FontWeight="Bold"
-                       Margin="0,0,0,10"/>
-
+            <TextBox x:Name="FirstImaginaryTextBox" Height="30" Margin="0,5,0,20"/>
+            <TextBlock Text="Druga liczba zespolona" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
             <TextBlock Text="Część rzeczywista a:"/>
-            <TextBox x:Name="SecondRealTextBox"
-                     Height="30"
-                     Margin="0,5,0,10"/>
-
+            <TextBox x:Name="SecondRealTextBox" Height="30" Margin="0,5,0,10"/>
             <TextBlock Text="Część urojona b:"/>
-            <TextBox x:Name="SecondImaginaryTextBox"
-                     Height="30"
-                     Margin="0,5,0,20"/>
-
-            <TextBlock Text="Wybierz działanie:"
-                       FontSize="16"
-                       FontWeight="Bold"
-                       Margin="0,0,0,10"/>
-
+            <TextBox x:Name="SecondImaginaryTextBox" Height="30" Margin="0,5,0,20"/>
+            <TextBlock Text="Wybierz działanie:" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
             <WrapPanel Margin="0,0,0,20">
                 <Button Content="Dodaj"
-                        Width="75"
-                        Height="35"
-                        Margin="0,0,10,10"
-                        Click="AddButton_Click"/>
+            Width="100"
+            Height="35"
+            Margin="0,0,10,10"
+            Click="AddButton_Click"/>
 
                 <Button Content="Odejmij"
-                        Width="75"
-                        Height="35"
-                        Margin="0,0,10,10"
-                        Click="SubtractButton_Click"/>
+            Width="100"
+            Height="35"
+            Margin="0,0,10,10"
+            Click="SubtractButton_Click"/>
 
                 <Button Content="Pomnóż"
-                        Width="75"
-                        Height="35"
-                        Margin="0,0,10,10"
-                        Click="MultiplyButton_Click"/>
+            Width="100"
+            Height="35"
+            Margin="0,0,10,10"
+            Click="MultiplyButton_Click"/>
 
                 <Button Content="Podziel"
-                        Width="75"
-                        Height="35"
-                        Margin="0,0,10,10"
-                        Click="DivideButton_Click"/>
+            Width="100"
+            Height="35"
+            Margin="0,0,10,10"
+            Click="DivideButton_Click"/>
+
+                <Button Content="|z₁| - Moduł"
+            Width="100"
+            Height="35"
+            Margin="0,0,10,10"
+            Click="MagnitudeButton_Click"/>
+
+                <Button Content="Sprzężenie(z₁)"
+            Width="100"
+            Height="35"
+            Margin="0,0,10,10"
+            Click="ConjugateButton_Click"/>
+
+                <Button Content="trig(z₁)"
+            Width="100"
+            Height="35"
+            Margin="0,0,10,10"
+            Click="TrigonometricFormButton_Click"/>
             </WrapPanel>
-
-            <TextBlock Text="Wynik:"
-                       FontSize="16"
-                       FontWeight="Bold"
-                       Margin="0,0,0,5"/>
-
-            <Border BorderBrush="Gray"
-                    BorderThickness="1"
-                    Padding="10"
-                    Margin="0,0,0,15">
-                <TextBlock x:Name="ResultTextBlock"
-                           Text="Brak wyniku"
-                           FontSize="18"
-                           TextWrapping="Wrap"/>
+            <TextBlock Text="Wynik:" FontSize="16" FontWeight="Bold" Margin="0,0,0,5"/>
+            <Border BorderBrush="Gray" BorderThickness="1" Padding="10" Margin="0,0,0,15">
+                <TextBlock x:Name="ResultTextBlock" Text="Brak wyniku" FontSize="18" TextWrapping="Wrap"/>
             </Border>
-
-            <TextBlock x:Name="ErrorTextBlock"
-                       Foreground="Red"
-                       FontWeight="Bold"
-                       TextWrapping="Wrap"/>
+            <TextBlock x:Name="ErrorTextBlock" Foreground="Red" FontWeight="Bold" TextWrapping="Wrap"/>
         </StackPanel>
-
         <!-- Panel graficzny -->
         <StackPanel Grid.Column="1">
-
-            <TextBlock Text="Interpretacja graficzna wyniku"
-                       FontSize="22"
-                       FontWeight="Bold"
-                       Margin="0,0,0,10"/>
-
-            <TextBlock Text="Oś pozioma: część rzeczywista, oś pionowa: część urojona"
-                       Margin="0,0,0,10"/>
-
-            <Border BorderBrush="Black"
-                    BorderThickness="1"
-                    Background="White">
-                <Canvas x:Name="ComplexPlaneCanvas"
-                        Width="480"
-                        Height="480"
-                        Background="White"/>
+            <TextBlock Text="Interpretacja graficzna wyniku" FontSize="22" FontWeight="Bold" Margin="0,0,0,10"/>
+            <TextBlock Text="Oś pozioma: część rzeczywista, oś pionowa: część urojona" Margin="0,0,0,10"/>
+            <Border BorderBrush="Black" BorderThickness="1" Background="White">
+                <Canvas x:Name="ComplexPlaneCanvas" Width="480" Height="480" Background="White"/>
             </Border>
-
         </StackPanel>
     </Grid>
 </Window>
