@@ -17,6 +17,7 @@ namespace ComplexCalculator
         private readonly ComplexCalculatorService _calculatorService;
         private readonly ComplexPlaneDrawingService _complexPlaneDrawingService;
         private readonly CalculationHistoryRepository _calculationHistoryRepository;
+        private readonly CalculationResultFileService _calculationResultFileService;
 
         public MainWindow()
         {
@@ -32,9 +33,11 @@ namespace ComplexCalculator
                 new DivideOperation(argumentValidator)
             };
 
-            _calculationHistoryRepository = new CalculationHistoryRepository();
+           
             _calculatorService = new ComplexCalculatorService(operations, argumentValidator);
             _complexPlaneDrawingService = new ComplexPlaneDrawingService();
+            _calculationHistoryRepository = new CalculationHistoryRepository();
+            _calculationResultFileService = new CalculationResultFileService();
 
             _complexPlaneDrawingService.DrawPlane(ComplexPlaneCanvas);
         }
@@ -100,6 +103,7 @@ namespace ComplexCalculator
                 );
 
                 _calculationHistoryRepository.Save(firstNumber, secondNumber, operation, result);
+                SaveBinaryCalculationResult(firstNumber, secondNumber, operation, result);
 
                 ResultTextBlock.Text = $"{firstNumber} {operation} ({secondNumber}) = {result}";
 
@@ -168,8 +172,10 @@ namespace ComplexCalculator
                 ComplexNumber number = ReadFirstComplexNumber();
 
                 double magnitude = number.Magnitude();
+                string result = $"|z₁| = {magnitude:0.##}";
 
-                ResultTextBlock.Text = $"|z₁| = {magnitude:0.##}";
+                ResultTextBlock.Text = result;
+                SaveUnaryCalculationResult(number, "|z₁|", result);
 
                 _complexPlaneDrawingService.DrawPlane(ComplexPlaneCanvas);
                 _complexPlaneDrawingService.DrawVector(ComplexPlaneCanvas, number);
@@ -187,8 +193,10 @@ namespace ComplexCalculator
                 ComplexNumber number = ReadFirstComplexNumber();
 
                 ComplexNumber conjugate = number.Conjugate();
+                string result = $"conj(z₁) = {conjugate}";
 
-                ResultTextBlock.Text = $"conj(z₁) = {conjugate}";
+                ResultTextBlock.Text = result;
+                SaveUnaryCalculationResult(number, "conj(z₁)", result);
 
                 _complexPlaneDrawingService.DrawPlane(ComplexPlaneCanvas);
                 _complexPlaneDrawingService.DrawVector(ComplexPlaneCanvas, conjugate);
@@ -206,8 +214,10 @@ namespace ComplexCalculator
                 ComplexNumber number = ReadFirstComplexNumber();
 
                 TrigonometricForm trigonometricForm = number.ToTrigonometricForm();
+                string result = $"z₁ = {trigonometricForm}";
 
-                ResultTextBlock.Text = $"z₁ = {trigonometricForm}";
+                ResultTextBlock.Text = result;
+                SaveUnaryCalculationResult(number, "trig(z₁)", result);
 
                 _complexPlaneDrawingService.DrawPlane(ComplexPlaneCanvas);
                 _complexPlaneDrawingService.DrawVector(ComplexPlaneCanvas, number);
@@ -225,6 +235,43 @@ namespace ComplexCalculator
                 FirstImaginaryTextBox,
                 "first number"
             );
+        }
+
+        private void SaveBinaryCalculationResult(
+            ComplexNumber firstNumber,
+            ComplexNumber secondNumber,
+            string operation,
+            ComplexNumber result)
+        {
+            CalculationResultFileEntry entry = new CalculationResultFileEntry
+            {
+                CreatedAt = DateTime.Now,
+                OperationType = "Binary",
+                Operation = operation,
+                FirstNumber = firstNumber.ToString(),
+                SecondNumber = secondNumber.ToString(),
+                Result = result.ToString()
+            };
+
+            _calculationResultFileService.Save(entry);
+        }
+
+        private void SaveUnaryCalculationResult(
+            ComplexNumber number,
+            string operation,
+            string result)
+        {
+            CalculationResultFileEntry entry = new CalculationResultFileEntry
+            {
+                CreatedAt = DateTime.Now,
+                OperationType = "Unary",
+                Operation = operation,
+                FirstNumber = number.ToString(),
+                SecondNumber = null,
+                Result = result
+            };
+
+            _calculationResultFileService.Save(entry);
         }
         private void ShowError(string message)
         {
