@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using ComplexCalculator.Models;
+using ComplexCalculator.Utils;
 
 namespace ComplexCalculator.Services
 {
@@ -21,6 +22,9 @@ namespace ComplexCalculator.Services
         private const double ArrowAngle = Math.PI / 6;
         private const double CanvasMargin = 30;
 
+        private const double AxisLabelEdgeOffset = 30;
+        private const double AxisLabelOffset = 5;
+
         /// <summary>
         /// Draws the empty complex plane on the given canvas.
         /// </summary>
@@ -35,14 +39,15 @@ namespace ComplexCalculator.Services
             // Remove all previous elements before drawing the plane again.
             canvas.Children.Clear();
 
+            // Get width and height of the canvas
             double width = canvas.Width;
             double height = canvas.Height;
 
-            // The center of the canvas is the point 0 + 0i.
+            // Get canvas center
             double centerX = width / 2;
             double centerY = height / 2;
 
-            DrawGrid(canvas, centerX, centerY, width, height);
+            DrawGrid(canvas, centerX, centerY, width, height); 
             DrawAxis(canvas, centerX, centerY, width, height);
             DrawAxisLabels(canvas, centerX, centerY, width, height);
         }
@@ -64,19 +69,22 @@ namespace ComplexCalculator.Services
                 throw new ArgumentNullException(nameof(number));
             }
 
+            // Get width and height of the canvas
             double width = canvas.Width;
             double height = canvas.Height;
 
-            // The vector starts in the center of the canvas.
+            // Get canvas center (vector start point)
             double centerX = width / 2;
             double centerY = height / 2;
 
+            // Calculate drawing scale to keep the vector inside the canvas.
             double scale = CalculateScale(canvas, number);
 
-            // In WPF, the Y axis grows downward - that is why the imaginary part is subtracted from centerY.
+            // Calculate the end point of the vector based on the complex number values and the scale.
             double endX = centerX + number.Real * scale;
-            double endY = centerY - number.Imaginary * scale;
+            double endY = centerY - number.Imaginary * scale; // In WPF the Y coordinate increases downwards instead of upwards, thats why the imaginary part is subtracted.
 
+            // Create vector line from the center to the calculated end point.
             Line vectorLine = new Line
             {
                 X1 = centerX,
@@ -87,6 +95,7 @@ namespace ComplexCalculator.Services
                 StrokeThickness = VectorStrokeThickness
             };
 
+            // Create a point at the end of the vector to represent the complex number.
             Ellipse point = new Ellipse
             {
                 Width = PointSize,
@@ -94,10 +103,11 @@ namespace ComplexCalculator.Services
                 Fill = Brushes.Red
             };
 
-            // Move the point so that its center is placed at the vector end.
+            // Adjust the position of the point so that it is centered at the end of the vector - otherwise the point would be positioned at its top-left corner.
             Canvas.SetLeft(point, endX - PointSize / 2);
             Canvas.SetTop(point, endY - PointSize / 2);
 
+            // Create a label with the value of the complex number.
             TextBlock pointLabel = new TextBlock
             {
                 Text = $"z = {number}",
@@ -105,12 +115,13 @@ namespace ComplexCalculator.Services
                 FontWeight = FontWeights.Bold
             };
 
+            // Adjust the position of the label so that it is placed slightly above and to the right of the end of the vector.
             Canvas.SetLeft(pointLabel, endX + 8);
             Canvas.SetTop(pointLabel, endY - 20);
 
             canvas.Children.Add(vectorLine);
 
-            // A zero vector has no visible direction, so the arrow head is skipped.
+            // Vector without length (0 + 0i) does not need an arrow head.
             if (!number.IsZero())
             {
                 DrawArrowHead(canvas, centerX, centerY, endX, endY);
@@ -166,21 +177,25 @@ namespace ComplexCalculator.Services
         /// <param name="height">The canvas height.</param>
         private void DrawGrid(Canvas canvas, double centerX, double centerY, double width, double height)
         {
+            // Draw vertical grid line to the right of the center.
             for (double x = centerX + DefaultScale; x < width; x += DefaultScale)
             {
                 DrawVerticalGridLine(canvas, x, height);
             }
 
+            // Draw vertical grid line to the left of the center.
             for (double x = centerX - DefaultScale; x > 0; x -= DefaultScale)
             {
                 DrawVerticalGridLine(canvas, x, height);
             }
 
+            // Draw horizontal grid line above the center.
             for (double y = centerY + DefaultScale; y < height; y += DefaultScale)
             {
                 DrawHorizontalGridLine(canvas, y, width);
             }
 
+            // Draw horizontal grid line below the center.
             for (double y = centerY - DefaultScale; y > 0; y -= DefaultScale)
             {
                 DrawHorizontalGridLine(canvas, y, width);
@@ -195,6 +210,7 @@ namespace ComplexCalculator.Services
         /// <param name="height">The canvas height.</param>
         private void DrawVerticalGridLine(Canvas canvas, double x, double height)
         {
+            // Draw vertical grid line at the given X coordinate, from top to bottom of the canvas.
             Line line = new Line
             {
                 X1 = x,
@@ -216,6 +232,7 @@ namespace ComplexCalculator.Services
         /// <param name="width">The canvas width.</param>
         private void DrawHorizontalGridLine(Canvas canvas, double y, double width)
         {
+            // Draw horizontal grid line at the given Y coordinate, from left to right of the canvas.
             Line line = new Line
             {
                 X1 = 0,
@@ -239,33 +256,37 @@ namespace ComplexCalculator.Services
         /// <param name="height">The canvas height.</param>
         private void DrawAxisLabels(Canvas canvas, double centerX, double centerY, double width, double height)
         {
+            // Create label for the real axis (Re)
             TextBlock realLabel = new TextBlock
             {
-                Text = "Re",
+                Text = Constants.RealPartLabel,
                 FontWeight = FontWeights.Bold
             };
 
-            Canvas.SetLeft(realLabel, width - 30);
-            Canvas.SetTop(realLabel, centerY + 5);
+            // Adjust the position of the real axis label so that it is placed slightly below and to the right of the end of the real axis.
+            Canvas.SetLeft(realLabel, width - AxisLabelEdgeOffset);
+            Canvas.SetTop(realLabel, centerY + AxisLabelOffset);
             canvas.Children.Add(realLabel);
 
+            // Create label for the imaginary axis (Im)
             TextBlock imaginaryLabel = new TextBlock
             {
-                Text = "Im",
+                Text = Constants.ImaginaryPartLabel,
                 FontWeight = FontWeights.Bold
             };
 
-            Canvas.SetLeft(imaginaryLabel, centerX + 5);
-            Canvas.SetTop(imaginaryLabel, 5);
+            Canvas.SetLeft(imaginaryLabel, centerX + AxisLabelOffset);
+            Canvas.SetTop(imaginaryLabel, AxisLabelOffset);
             canvas.Children.Add(imaginaryLabel);
 
+            // Create label for the zero point (0)
             TextBlock zeroLabel = new TextBlock
             {
-                Text = "0"
+                Text = Constants.ZeroLabel,
             };
 
-            Canvas.SetLeft(zeroLabel, centerX + 5);
-            Canvas.SetTop(zeroLabel, centerY + 5);
+            Canvas.SetLeft(zeroLabel, centerX + AxisLabelOffset);
+            Canvas.SetTop(zeroLabel, centerY + AxisLabelOffset);
             canvas.Children.Add(zeroLabel);
         }
 
@@ -289,6 +310,7 @@ namespace ComplexCalculator.Services
             double x2 = endX - ArrowLength * Math.Cos(angle + ArrowAngle);
             double y2 = endY - ArrowLength * Math.Sin(angle + ArrowAngle);
 
+            // Create two lines for the arrow head and add them to the canvas.
             Line arrowLine1 = new Line
             {
                 X1 = endX,
@@ -328,9 +350,14 @@ namespace ComplexCalculator.Services
                 return DefaultScale;
             }
 
+            // Calculate the maximum radius that can fit in the canvas, considering the margin.
             double maxCanvasRadius = Math.Min(canvas.Width, canvas.Height) / 2 - CanvasMargin;
 
-            return Math.Min(DefaultScale, maxCanvasRadius / maxCoordinate);
+            // Calculate the scale that fits the vector inside the canvas.
+            double scaleThatFitsCanvas = maxCanvasRadius / maxCoordinate;
+
+            // Use the default scale for small values or reduced it for large values.
+            return Math.Min(DefaultScale, scaleThatFitsCanvas);
         }
 
         /// <summary>

@@ -15,5 +15,9 @@ namespace ComplexCalculator.Utils
 
         public const char CommaSeparator = ',';
         public const char DotSeparator = '.';
+
+        public const string RealPartLabel = "Re";
+        public const string ImaginaryPartLabel = "Im";
+        public const string ZeroLabel = "0";
     }
 }
