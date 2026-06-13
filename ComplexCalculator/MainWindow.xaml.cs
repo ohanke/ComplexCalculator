@@ -1,10 +1,11 @@
-﻿using System.Globalization;
+﻿using ComplexCalculator.Models;
+using ComplexCalculator.Operations;
+using ComplexCalculator.Persistence;
+using ComplexCalculator.Services;
+using ComplexCalculator.Utils;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
-using ComplexCalculator.Models;
-using ComplexCalculator.Services;
-using ComplexCalculator.Operations;
-using ComplexCalculator.Utils;
 
 namespace ComplexCalculator
 {
@@ -15,6 +16,7 @@ namespace ComplexCalculator
 
         private readonly ComplexCalculatorService _calculatorService;
         private readonly ComplexPlaneDrawingService _complexPlaneDrawingService;
+        private readonly CalculationHistoryRepository _calculationHistoryRepository;
 
         public MainWindow()
         {
@@ -30,6 +32,7 @@ namespace ComplexCalculator
                 new DivideOperation(argumentValidator)
             };
 
+            _calculationHistoryRepository = new CalculationHistoryRepository();
             _calculatorService = new ComplexCalculatorService(operations, argumentValidator);
             _complexPlaneDrawingService = new ComplexPlaneDrawingService();
 
@@ -80,6 +83,8 @@ namespace ComplexCalculator
                     secondNumber,
                     operation
                 );
+
+                _calculationHistoryRepository.Save(firstNumber, secondNumber, operation, result);
 
                 ResultTextBlock.Text = $"{firstNumber} {operation} ({secondNumber}) = {result}";
 
